@@ -1,0 +1,40 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main() {
+  // First part get the user input
+
+  char *buff = NULL;
+  size_t size = 0;
+
+  while (1) {
+    printf("Enter programs to run\n");
+
+    ssize_t user_text = getline(&buff, &size, stdin);
+
+    if (user_text == -1) {
+      // EOF or error
+      fprintf(stderr, "getline\n");
+      break;
+    }
+
+    // Remove trailing newline
+    if (buff[user_text - 1] == '\n') {
+      buff[user_text - 1] = '\0';
+    }
+
+    int pid = fork();
+
+    if (pid == 0) { // Child process
+      execl(buff, buff, (char *)NULL);
+    } else {
+      // Parent process
+      int status;
+      waitpid(pid, &status, 0);
+    }
+  }
+}

@@ -1,0 +1,6 @@
+#include <stdio.h>
+
+int main() {
+  // First part get the user input 
+  //
+}
